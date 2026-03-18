@@ -8,9 +8,10 @@
     "build": "vite build --emptyOutDir",
     "lint": "eslint *.js src/**/*.js",
     "format": "prettier --ignore-path ./.gitignore --write \"./**/*.{html,json,js,ts,css}\"",
-    "test": "jest"
+    "test": "jest",
+    "preview": "vite preview"
   },
-  "author": "Shane Thompson",
+  "author": "Vinolia Moekwa",
   "license": "ISC",
   "devDependencies": {
     "eslint": "^8.56.0",
