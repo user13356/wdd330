@@ -1,23 +1,14 @@
-function convertToJson(res) {
-  if (res.ok) {
-    return res.json();
-  } else {
-    throw new Error("Bad Response");
-  }
-}
+// main.js
+import ProductData from './ProductData.mjs'; // import the module
 
-export default class ProductData {
-  constructor(category) {
-    this.category = category;
-    this.path = `../json/${this.category}.json`;
-  }
-  getData() {
-    return fetch(this.path)
-      .then(convertToJson)
-      .then((data) => data);
-  }
-  async findProductById(id) {
-    const products = await this.getData();
-    return products.find((item) => item.Id === id);
-  }
-}
+// create an instance
+const dataSource = new ProductData("tents");
+
+// now you can use dataSource
+console.log(dataSource);
+
+// Example usage
+(async () => {
+  const product = await dataSource.findProductById(1);
+  console.log('Found product:', product);
+})();

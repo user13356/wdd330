@@ -17,3 +17,15 @@ async function addToCartHandler(e) {
 document
   .getElementById("addToCart")
   .addEventListener("click", addToCartHandler);
+
+  // ProductData.mjs
+export default class ProductData {
+  constructor(category) {
+    this.category = category;
+    this.products = [];
+  }
+
+  async findProductById(id) {
+    return this.products.find(p => p.id === id);
+  }
+}
