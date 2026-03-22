@@ -1,23 +1,95 @@
-// wrapper for querySelector...returns matching element
+//
+// Selectors
+//
 export function qs(selector, parent = document) {
   return parent.querySelector(selector);
 }
-// or a more concise version if you are into that sort of thing:
-// export const qs = (selector, parent = document) => parent.querySelector(selector);
 
-// retrieve data from localstorage
+//
+// Local Storage
+//
 export function getLocalStorage(key) {
-  return JSON.parse(localStorage.getItem(key)) ;
+  const data = localStorage.getItem(key);
+  if (!data) return null;
+
+  try {
+    return JSON.parse(data);
+  } catch (error) {
+    console.error("Error parsing localStorage data:", error);
+    return null;
+  }
 }
-// save data to local storage
+
 export function setLocalStorage(key, data) {
   localStorage.setItem(key, JSON.stringify(data));
 }
-// set a listener for both touchend and click
+
+//
+// Click helper (touch + click support)
+//
 export function setClick(selector, callback) {
-  qs(selector).addEventListener("touchend", (event) => {
+  const element = qs(selector);
+
+  if (!element) return;
+
+  element.addEventListener("click", callback);
+
+  element.addEventListener("touchend", (event) => {
     event.preventDefault();
-    callback();
+    callback(event);
   });
-  qs(selector).addEventListener("click", callback);
+}
+
+//
+// URL parameter helper
+//
+export function getParam(param) {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get(param);
+}
+
+//
+// Render list using template
+//
+export function renderListWithTemplate(
+  template,
+  parentElement,
+  list,
+  position = "afterbegin",
+  clear = false
+) {
+  if (!Array.isArray(list) || !parentElement) return;
+
+  const htmlStrings = list.map((item) => template(item));
+
+  if (clear) {
+    parentElement.innerHTML = "";
+  }
+
+  parentElement.insertAdjacentHTML(position, htmlStrings.join(""));
+}
+
+//
+// Sort products
+//
+export function sortProducts(products, sortType) {
+  if (!Array.isArray(products)) return [];
+
+  const sorted = [...products];
+
+  switch (sortType) {
+    case "price-asc":
+      return sorted.sort((a, b) => a.FinalPrice - b.FinalPrice);
+
+    case "price-desc":
+      return sorted.sort((a, b) => b.FinalPrice - a.FinalPrice);
+
+    case "name-asc":
+      return sorted.sort((a, b) =>
+        (a.Name || "").localeCompare(b.Name || "")
+      );
+
+    default:
+      return products;
+  }
 }
