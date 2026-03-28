@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sleep Outside | Home</title>
+
+    <link rel="stylesheet" href="/src/css/style.css" />
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header class="divider">
+        <div class="logo">
+            <img src="../images/noun_Tent_2517.svg" alt="cart logo" />
+            <a href="../cart/index.html">
+                Sleep<span class="highlight">Outside</span>
+            </a>
+        </div>
+
+        <div class="cart">
+            <a href="../cart/index.html">🛒 Cart</a>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="divider">
+
+        <!-- HERO -->
+        <section class="hero">
+            <img src="../images/banner.jpg" alt="hero image" />
+        </section>
+
+        <!-- SORT OPTIONS -->
+        <section class="sort">
+            <label for="sortSelect">Sort by:</label>
+            <select id="sortSelect">
+                <option value="">Default</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+                <option value="name-asc">Name: A → Z</option>
+            </select>
+        </section>
+
+        <!-- PRODUCT LIST (JS FILLED) -->
+        <section class="products">
+            <h2>Top Products</h2>
+
+            <ul class="product-list"></ul>
+
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        &copy; 2026 Sleep Outside
+    </footer>
+
+    <!-- MAIN JS -->
+    <script type="module" src="../js/main.js"></script>
+
+</body>
+
+</html>

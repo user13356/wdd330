@@ -22,6 +22,19 @@ export function setClick(selector, callback) {
   qs(selector).addEventListener("click", callback);
 }
 
+export function updateCartCount() {
+  // Get cart items from localStorage, or an empty array if the cart is null
+  const cartItems = getLocalStorage("so-cart") || [];
+  const numItems = cartItems.reduce((sum, item) => sum + item.Quantity, 0);
+
+  // Find the .cart-count element
+  const cartCountElement = qs(".cart-count");
+
+  // Set the text content.
+  // If 0, it will be an empty string, and the CSS will hide it.
+  cartCountElement.textContent = cartItems.length > 0 ? numItems : "";
+}
+
 // get the product id from the query string
 export function getParam(param) {
   const queryString = window.location.search;
@@ -37,4 +50,131 @@ export function renderListWithTemplate(template, parentElement, list, position =
     parentElement.innerHTML = "";
   }
   parentElement.insertAdjacentHTML(position, htmlStrings.join(""));
+}
+
+// Add
+
+parentElement.innerHTML = template;
+updateCartCount();
+
+
+export async function loadTemplate(path) {
+  const response = await fetch(path);
+  const template = await response.text();
+  return template;
+}
+
+export async function loadHeaderFooter() {
+  const headerTemplate = await loadTemplate("../partials/header.html");
+  const footerTemplate = await loadTemplate("../partials/footer.html");
+
+  const headerElement = document.querySelector("#main-header");
+  const footerElement = document.querySelector("#main-footer");
+
+  renderWithTemplate(headerTemplate, headerElement);
+  renderWithTemplate(footerTemplate, footerElement);
+
+  const searchForm = headerElement.querySelector(".search form");
+  if (searchForm) {
+    searchForm.addEventListener("submit", (e) => {
+
+      e.preventDefault();
+      const query = searchForm.querySelector("input").value;
+
+      const productListElement = document.querySelector(".product-list");
+
+      if (productListElement) {
+        // 1. Update the URL without reloading
+        const url = new URL(window.location);
+        url.searchParams.set("q", query);
+        url.searchParams.delete("category")
+
+        window.history.pushState({}, "", url.toString());
+
+        const searchEvent = new CustomEvent("search-update", { detail: { query } });
+        window.dispatchEvent(searchEvent);
+      } else {
+        window.location.href = `/product_listing/index.html?q=${query}`;
+      }
+    });
+  }
+}
+
+export function alertMessage(message, scroll = true) {
+  const main = qs("main");
+  const alert = document.createElement("div");
+  alert.classList.add("alert");
+  alert.innerHTML = `<p>${message}</p><span>&times;</span>`;
+  alert.addEventListener("click", function (e) {
+    if (e.target.tagName === "SPAN") {
+      main.removeChild(this);
+    }
+  });
+  main.prepend(alert);
+  if (scroll)
+    window.scrollTo(0, 0);
+}
+
+export function removeAllAlerts() {
+  const alerts = document.querySelectorAll(".alert");
+  alerts.forEach((alert) => qs("main").removeChild(alert));
+}
+
+/**
+ * Render breadcrumb navigation below the header
+ * @param {string} category - Category name or "Search Results"
+ * @param {number} count - Optional product count for product listing pages
+ */
+export function renderBreadcrumb(category, count = null, productName = null) {
+  if (!category) {
+    return;
+  }
+
+  // Don't show breadcrumb on home page
+  const pathname = window.location.pathname;
+  const isHomePage = pathname === "/index.html" ||
+    pathname === "/" ||
+    (pathname.endsWith("/index.html") &&
+      !pathname.includes("product") &&
+      !pathname.includes("product_listing") &&
+      !pathname.includes("product_pages"));
+
+  if (isHomePage) {
+    return;
+  }
+
+  const headerElement = qs("#main-header");
+  if (!headerElement) {
+    console.warn("Breadcrumb: Header element not found");
+    return;
+  }
+
+  // Remove existing breadcrumb if present
+  const existingBreadcrumb = qs("#breadcrumb-nav");
+  if (existingBreadcrumb) {
+    existingBreadcrumb.remove();
+  }
+
+  // Format category name
+  const categoryName = category === "Search Results" ? category : prettifySlug(category);
+
+  // Build breadcrumb HTML
+  let breadcrumbHTML = `<nav id="breadcrumb-nav" aria-label="Breadcrumb" class="breadcrumb">`;
+
+  if (count !== null) {
+    // Product listing page: "Category->(X items)"
+    const itemText = count === 1 ? "item" : "items";
+    breadcrumbHTML += `<a href="/product_listing/index.html?category=${category}">${categoryName}</a>-><span>(${count} ${itemText})</span>`;
+  } else if (productName) {
+    // Product detail page: "Category -> Product Name"
+    breadcrumbHTML += `<a href="/product_listing/index.html?category=${category}">${categoryName}</a>-><span>${productName}</span>`;
+  } else {
+    // Product detail page (fallback): "Category"
+    breadcrumbHTML += `<a href="/product_listing/index.html?category=${category}">${categoryName}</a>`;
+  }
+
+  breadcrumbHTML += `</nav>`;
+
+  // Insert breadcrumb after header
+  headerElement.insertAdjacentHTML("afterend", breadcrumbHTML);
 }
