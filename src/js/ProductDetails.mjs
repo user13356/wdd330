@@ -1,6 +1,6 @@
 import { getLocalStorage, setLocalStorage } from './utils.mjs';
-
-
+const baseURL = import.meta.env.VITE_SERVER_URL
+//${baseURL}product/${id}
 
 export default class ProductDetails {
   
@@ -15,7 +15,7 @@ export default class ProductDetails {
   
     document
       .getElementById('addToCart')
-      .addEventListener('click', this.addProductToCart.bind(this));
+      .addEventListener('click', this.addProductToCart.bind(this)); // If we don't put bind, this=addToCart button. This way we link ProductDetails object to this. 
            }
    addProductToCart() {
     const cartItems = getLocalStorage('so-cart') || [];

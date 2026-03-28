@@ -37,3 +37,61 @@ export function renderListWithTemplate(template, parentElement, list, position =
   }
   parentElement.insertAdjacentHTML(position, htmlStrings.join(''));
 }
+/*export function renderWithTemplate(template, parentElement, data, callback) {
+  parentElement.innerHTML = template;
+
+  if(callback) {
+    callback(data);
+  }
+
+}
+
+export async function loadTemplate(path){
+  const response = await fetch(path)
+  const template = await response.text()
+  return template
+}
+export async function loadHeaderFooter(headerPath, footerPath){
+  
+  
+  
+  const headerElement = document.getElementById('ajaxHeader')
+  const headerTemplate = await loadTemplate(headerPath)
+  
+  const footerElement = document.getElementById('ajaxFooter')
+  const footerTemplate = document.loadTemplate(footerPath)
+
+  renderWithTemplate(headerTemplate,headerElement);
+  renderWithTemplate(footerTemplate, footerElement)
+  
+
+}*/
+export function renderWithTemplate(template, parentElement, data, callback) {
+  parentElement.innerHTML = template;
+  if (callback) {
+    callback(data);
+  }
+}
+
+export async function loadTemplate(path) {
+  const response = await fetch(path);
+  const template = await response.text();
+  return template;
+}
+
+export async function loadHeaderFooter(headerPath, footerPath) {
+  const headerElement = document.getElementById('ajaxHeader');
+  const footerElement = document.getElementById('ajaxFooter');
+
+  if (headerElement) {
+    const headerTemplate = await loadTemplate(headerPath);
+    renderWithTemplate(headerTemplate, headerElement);
+  }
+
+  if (footerElement) {
+    const footerTemplate = await loadTemplate(footerPath);
+    renderWithTemplate(footerTemplate, footerElement);
+  }
+}
+
+
