@@ -8,7 +8,7 @@ export default defineConfig({
   root: "src/",
   publicDir: "public", // <-- Ensure JSON is inside public/
   build: {
-    outDir: "../dist",
+    outDir: "src/dist",
     emptyOutDir: true,
     rollupOptions: {
       input: {
