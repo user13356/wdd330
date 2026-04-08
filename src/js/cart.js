@@ -1,4 +1,6 @@
 import { getLocalStorage } from './utils.mjs';
+import { loadHeaderFooter } from './utils.mjs';
+
 
 function renderCartContents() {
   const cartItems = getLocalStorage('so-cart');
@@ -24,5 +26,10 @@ function cartItemTemplate(item) {
 
   return newItem;
 }
+const checkoutBtn = document.getElementById('checkout')
+checkoutBtn.addEventListener('click', () =>{
+  window.location.href = '/checkout/'
+})
 
 renderCartContents();
+loadHeaderFooter('/partials/header.html' , '/partials/footer.html')

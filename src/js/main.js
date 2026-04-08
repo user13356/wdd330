@@ -15,4 +15,5 @@ import { loadHeaderFooter } from './utils.mjs';
 //List.init
 
 
+
 loadHeaderFooter('/partials/header.html', '/partials/footer.html');
